@@ -61,14 +61,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
 
-      # Await Manual Approval
-      - name: Awaiting for Approval
-        uses: hmarr/auto-approve-action@v3
-        with:
-          status: 'waiting-for-approval'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       # Apply Terraform changes after approval
       - name: Terraform Apply
         if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master'
