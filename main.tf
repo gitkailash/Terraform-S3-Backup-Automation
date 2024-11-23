@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "3.74.2"
+    }
+  }
+}
+
 provider "aws" {
   region = var.region
   # access_key = var.AWS_ACCESS_KEY_ID
