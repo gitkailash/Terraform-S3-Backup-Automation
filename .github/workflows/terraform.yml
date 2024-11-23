@@ -71,7 +71,7 @@ jobs:
 
       # Apply Terraform changes after approval
       - name: Terraform Apply
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master'
         run: terraform apply -auto-approve plan.tfplan
 
       # Notify success

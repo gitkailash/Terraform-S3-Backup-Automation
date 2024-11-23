@@ -22,7 +22,7 @@ resource "aws_cloudwatch_event_target" "backup_event_target" {
     }
 
     input_template = <<EOT
-      "The backup job with ID <backup_id> for plan <backup_vault_arn> in vault <backup_vault> has state <state> at <timestamp>."
+"The backup job with ID <backup_id> for plan <backup_vault_arn> in vault <backup_vault> has state <state> at <timestamp>."
     EOT
   }
 }
