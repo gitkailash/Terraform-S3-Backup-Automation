@@ -7,7 +7,7 @@ resource "aws_backup_plan" "backup_plan" {
   rule {
     rule_name         = "daily-backup-rule"
     target_vault_name = aws_backup_vault.backup_vault.name
-    schedule          = "cron(6 15 * * ? *)" # 6:15 PM UTC = 12:00 AM Nepal Time
+    schedule          = "cron(15 18 * * ? *)" # 6:15 PM UTC = 12:00 AM Nepal Time
 
     start_window      = 60
     completion_window = 120
