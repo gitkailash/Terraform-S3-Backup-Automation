@@ -23,19 +23,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Install the latest version of Terraform CLI
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-
       # Initialize Terraform
       - name: Terraform Init
         run: terraform init
 
       # Check Terraform formatting
-      - name: Terraform Format
+      - name: Terraform Format Check
         run: terraform fmt -check
+
+      # Terraform formatting
+      - name: Terraform Format
+        run: terraform fmt -recursive
+
+      # Terraform Validation
+      - name: Terraform Validation
+        run: terraform validate
 
       # Generate an execution plan
       - name: Terraform Plan
