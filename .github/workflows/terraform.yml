@@ -29,33 +29,17 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: List Repository Contents
-        run: ls -alh
-
-  init:
-    name: 'Terraform Initialization'
-    runs-on: ubuntu-latest
-    needs: checkout
-
-    steps:
       - name: Terraform Init
         run: terraform init
-        working-directory: ./Terraform-S3-Backup-Automation
-
-      - name: Check Current Directory
-        run: pwd
 
   validate:
     name: 'Terraform Validation'
     runs-on: ubuntu-latest
-    needs: init
+    needs: checkout
 
     steps:
       - name: Terraform Validate
         run: terraform validate
-        
-      - name: Check Current Directory
-        run: pwd
 
   plan:
     name: 'Terraform Plan'
@@ -63,12 +47,6 @@ jobs:
     needs: validate
 
     steps:
-      - name: Debug Repository Contents
-        run: ls -alh
-      
-      - name: Check Current Directory
-        run: pwd
-
       - name: Terraform Plan
         run: terraform plan -out=plan-${{ github.event.inputs.environment }}.tfplan
 
@@ -107,7 +85,7 @@ jobs:
         run: terraform destroy -auto-approve
 
   notify_success:
-    name: 'Send Notifications'
+    name: 'Send Notification'
     runs-on: ubuntu-latest
     needs: apply
     if: success()
