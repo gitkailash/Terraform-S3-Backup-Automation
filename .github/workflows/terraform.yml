@@ -32,6 +32,9 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Terraform plan
+        run: terraform plan
+
   validate:
     name: 'Terraform Validation'
     runs-on: ubuntu-latest
