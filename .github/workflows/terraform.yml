@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Terraform Init
-        run: terraform init -input=false
+        run: terraform init
 
   validate:
     name: 'Terraform Validation'
@@ -54,7 +54,7 @@ jobs:
 
     steps:
       - name: Terraform Plan
-        run: terraform plan -input=false -out=plan-${{ github.event.inputs.environment }}.tfplan
+        run: terraform plan -out=plan-${{ github.event.inputs.environment }}.tfplan
 
   manual_approval:
     name: 'Manual Approval for Production'
@@ -78,7 +78,7 @@ jobs:
 
     steps:
       - name: Terraform Apply
-        run: terraform apply -input=false -auto-approve plan-${{ github.event.inputs.environment }}.tfplan
+        run: terraform apply -auto-approve plan-${{ github.event.inputs.environment }}.tfplan
 
   destroy:
     name: 'Terraform Destroy'
@@ -88,7 +88,7 @@ jobs:
 
     steps:
       - name: Terraform Destroy
-        run: terraform destroy -input=false -auto-approve
+        run: terraform destroy -auto-approve
 
   notify_success:
     name: 'Notify Success'
