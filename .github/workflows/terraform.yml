@@ -32,7 +32,7 @@ jobs:
 
       # Step 2: Initialize Terraform
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -input=false
 
       # Step 3: Check Terraform formatting
       - name: Terraform Format Check
@@ -60,7 +60,7 @@ jobs:
 
     steps:
       # Step 1: Manual Approval
-      - name: Await Manual Approval
+      - name: Await Manual Approval (Production Only)
         if: ${{ github.event.inputs.environment == 'production' }}
         uses: softprops/turnstyle@v1
         with:
@@ -77,7 +77,7 @@ jobs:
       # Step 3: Terraform Apply
       - name: Apply Terraform Plan
         if: ${{ github.event.inputs.action == 'Terraform_apply' }}
-        run: terraform apply -auto-approve plan-${{ github.event.inputs.environment }}.tfplan
+        run: terraform apply -input=false -auto-approve plan-${{ github.event.inputs.environment }}.tfplan
 
       # Step 4: Notify Success for Apply
       - name: Notify Success
@@ -100,7 +100,7 @@ jobs:
       # Step 1: Destroy Terraform Resources
       - name: Terraform Destroy
         if: ${{ github.event.inputs.action == 'Terraform_destroy' }}
-        run: terraform destroy -auto-approve
+        run: terraform destroy -input=false -auto-approve
 
       # Step 2: Notify Success for Destroy
       - name: Notify Success
