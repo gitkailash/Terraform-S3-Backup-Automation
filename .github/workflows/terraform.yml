@@ -96,7 +96,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: terraform-lock
-          path: .terraform.lock.hcl
+          path: .terraform.lock.hcl  # This is where you upload the lock file
 
   manual_approval:
     name: 'Manual Approval for Production'
@@ -127,7 +127,7 @@ jobs:
       - name: Download .terraform.lock.hcl
         uses: actions/download-artifact@v3
         with:
-          name: terraform-lock
+          name: terraform-lock  # This step now works because you uploaded the lock file in the plan stage
 
       - name: Terraform Apply
         run: terraform apply -auto-approve plan-${{ github.event.inputs.environment }}.tfplan
