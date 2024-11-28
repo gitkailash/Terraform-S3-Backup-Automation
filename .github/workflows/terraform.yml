@@ -7,6 +7,10 @@ on:
         description: 'Environment to deploy (staging or production)'
         required: true
         default: 'staging'
+      action:
+        description: 'Action to perform (Terraform_apply or Terraform_destroy)'
+        required: true
+        default: 'Terraform_apply'
 
 permissions:
   contents: write
@@ -50,7 +54,7 @@ jobs:
 
       # Step 7: Manual Approval for Production
       - name: Await Manual Approval
-        if: ${{ github.event.inputs.environment == 'production' }}
+        if: ${{ github.event.inputs.environment == 'production' && github.event.inputs.action == 'Terraform_apply' }}
         uses: hmarr/auto-approve-action@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -59,10 +63,15 @@ jobs:
 
       # Step 8: Apply Terraform Changes
       - name: Terraform Apply
-        if: ${{ github.event.inputs.environment == 'staging' || github.event.inputs.environment == 'production' }}
+        if: ${{ github.event.inputs.action == 'Terraform_apply' }}
         run: terraform apply -auto-approve plan-${{ github.event.inputs.environment }}.tfplan
 
-      # Step 9: Notify Success
+      # Step 9: Destroy Terraform Resources (only if action is Terraform_destroy)
+      - name: Terraform Destroy
+        if: ${{ github.event.inputs.action == 'Terraform_destroy' }}
+        run: terraform destroy -auto-approve
+
+      # Step 10: Notify Success
       - name: Notify Success
         if: success()
         run: |
