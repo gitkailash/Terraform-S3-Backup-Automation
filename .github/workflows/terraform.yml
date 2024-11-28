@@ -117,6 +117,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: terraform-plan-file
+      
+      - name: Terraform Init
+        run: terraform init -upgrade
 
       - name: Terraform Apply
         run: terraform apply -auto-approve plan-${{ github.event.inputs.environment }}.tfplan
