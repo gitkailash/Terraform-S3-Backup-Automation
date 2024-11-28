@@ -54,10 +54,10 @@ jobs:
 
       # Step 7: Manual Approval for Production
       - name: Await Manual Approval
-        if: ${{ github.event.inputs.environment == 'production' && github.event.inputs.action == 'Terraform_apply' }}
-        uses: hmarr/auto-approve-action@v3
+        if: ${{ github.event.inputs.environment == 'production' }}
+        uses: softprops/turnstyle@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          poll-interval-seconds: 30        # Check every 30 seconds
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
