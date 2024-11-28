@@ -39,8 +39,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            .terraform
-            .terraform.lock.hcl
+            terraform/.terraform
+            terraform/.terraform.lock.hcl
           key: ${{ runner.os }}-terraform-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-terraform-
@@ -118,4 +118,3 @@ jobs:
           aws sns publish --topic-arn ${{ secrets.SNS_TOPIC_ARN }} \
             --message "Terraform Apply succeeded for ${{ github.event.inputs.environment }} environment!" \
             --subject "Terraform Apply Success"
-            
