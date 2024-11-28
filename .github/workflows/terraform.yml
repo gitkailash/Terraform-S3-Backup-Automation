@@ -86,6 +86,12 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -out=plan-${{ github.event.inputs.environment }}.tfplan
 
+      - name: Upload Plan File as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraform-plan-file
+          path: plan-${{ github.event.inputs.environment }}.tfplan
+
   manual_approval:
     name: 'Manual Approval for Production'
     runs-on: ubuntu-latest
@@ -110,7 +116,7 @@ jobs:
       - name: Download Terraform Files
         uses: actions/download-artifact@v3
         with:
-          name: terraform-files
+          name: terraform-plan-file
       
       - name: Terraform Init
         run: terraform init
@@ -132,7 +138,7 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        
+
       - name: Terraform Destroy
         run: terraform destroy -auto-approve
 
