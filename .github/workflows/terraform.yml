@@ -41,6 +41,9 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Check Current Directory
+        run: pwd
+
   validate:
     name: 'Terraform Validation'
     runs-on: ubuntu-latest
@@ -49,6 +52,9 @@ jobs:
     steps:
       - name: Terraform Validate
         run: terraform validate
+        
+      - name: Check Current Directory
+        run: pwd
 
   plan:
     name: 'Terraform Plan'
@@ -58,6 +64,9 @@ jobs:
     steps:
       - name: Debug Repository Contents
         run: ls -alh
+      
+      - name: Check Current Directory
+        run: pwd
 
       - name: Terraform Plan
         run: terraform plan -out=plan-${{ github.event.inputs.environment }}.tfplan
