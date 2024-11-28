@@ -51,19 +51,37 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+  validate:
+    name: 'Terraform Validation'
+    runs-on: ubuntu-latest
+    needs: init
+
+    steps:
+      # Download the files from the previous job
+      - name: Download Terraform Files
+        uses: actions/download-artifact@v3
+        with:
+          name: terraform-files
+
+      - name: Terraform Init
+        run: terraform init  # Ensure modules are downloaded and initialized
+
       - name: Terraform Validate
         run: terraform validate
 
   plan:
     name: 'Terraform Plan'
     runs-on: ubuntu-latest
-    needs: init
+    needs: validate
 
     steps:
       - name: Download Terraform Files
         uses: actions/download-artifact@v3
         with:
           name: terraform-files
+
+      - name: Terraform Init
+        run: terraform init
 
       - name: Terraform Plan
         run: terraform plan -out=plan-${{ github.event.inputs.environment }}.tfplan
