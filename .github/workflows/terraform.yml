@@ -29,26 +29,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-  cache:
-    name: 'Cache Terraform Files'
-    runs-on: ubuntu-latest
-    needs: checkout
-
-    steps:
-      - name: Cache Terraform Files
-        uses: actions/cache@v3
-        with:
-          path: |
-            terraform/.terraform
-            terraform/.terraform.lock.hcl
-          key: ${{ runner.os }}-terraform-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-terraform-
-
   init:
     name: 'Terraform Initialization'
     runs-on: ubuntu-latest
-    needs: cache
+    needs: checkout
 
     steps:
       - name: Terraform Init
