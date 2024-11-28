@@ -1,4 +1,4 @@
-name: 'Terraform Single-Branch Workflow'
+name: 'Terraform Workflow'
 
 on:
   workflow_dispatch:
@@ -16,96 +16,106 @@ permissions:
   contents: write
 
 env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
 
 jobs:
-  plan:
-    name: 'Terraform Plan'
+  checkout:
+    name: 'Checkout Repository'
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Step 2: Initialize Terraform
+  cache:
+    name: 'Cache Terraform Files'
+    runs-on: ubuntu-latest
+    needs: checkout
+
+    steps:
+      - name: Cache Terraform Files
+        uses: actions/cache@v3
+        with:
+          path: |
+            .terraform
+            .terraform.lock.hcl
+          key: ${{ runner.os }}-terraform-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-terraform-
+
+  init:
+    name: 'Terraform Initialization'
+    runs-on: ubuntu-latest
+    needs: cache
+
+    steps:
       - name: Terraform Init
         run: terraform init -input=false
 
-      # Step 3: Check Terraform formatting
-      - name: Terraform Format Check
-        run: terraform fmt -check
-
-      # Step 4: Terraform Validation
-      - name: Terraform Validation
-        run: terraform validate
-
-      # Step 5: Generate Terraform Plan
-      - name: Generate Terraform Plan
-        run: terraform plan -input=false -out=plan-${{ github.event.inputs.environment }}.tfplan
-
-      # Step 6: Upload Plan File for Other Jobs
-      - name: Upload Terraform Plan
-        uses: actions/upload-artifact@v3
-        with:
-          name: terraform-plan
-          path: plan-${{ github.event.inputs.environment }}.tfplan
-
-  apply:
-    name: 'Terraform Apply'
+  validate:
+    name: 'Terraform Validation'
     runs-on: ubuntu-latest
-    needs: plan
+    needs: init
 
     steps:
-      # Step 1: Manual Approval
-      - name: Await Manual Approval (Production Only)
-        if: ${{ github.event.inputs.environment == 'production' }}
+      - name: Terraform Validate
+        run: terraform validate
+
+  plan:
+    name: 'Terraform Plan'
+    runs-on: ubuntu-latest
+    needs: validate
+
+    steps:
+      - name: Terraform Plan
+        run: terraform plan -input=false -out=plan-${{ github.event.inputs.environment }}.tfplan
+
+  manual_approval:
+    name: 'Manual Approval for Production'
+    runs-on: ubuntu-latest
+    needs: plan
+    if: ${{ github.event.inputs.environment == 'production' }}
+
+    steps:
+      - name: Await Manual Approval
         uses: softprops/turnstyle@v1
         with:
           poll-interval-seconds: 30
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Step 2: Download Plan File
-      - name: Download Terraform Plan
-        uses: actions/download-artifact@v3
-        with:
-          name: terraform-plan
+  apply:
+    name: 'Terraform Apply'
+    runs-on: ubuntu-latest
+    needs: manual_approval
+    if: ${{ github.event.inputs.action == 'Terraform_apply' }}
 
-      # Step 3: Terraform Apply
-      - name: Apply Terraform Plan
-        if: ${{ github.event.inputs.action == 'Terraform_apply' }}
+    steps:
+      - name: Terraform Apply
         run: terraform apply -input=false -auto-approve plan-${{ github.event.inputs.environment }}.tfplan
-
-      # Step 4: Notify Success for Apply
-      - name: Notify Success
-        if: ${{ success() && github.event.inputs.action == 'Terraform_apply' }}
-        run: |
-          aws sns publish --topic-arn ${{ secrets.SNS_TOPIC_ARN }} \
-            --message "Terraform Apply succeeded for ${{ github.event.inputs.environment }} environment!" \
-            --subject "Terraform Apply Success"
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
 
   destroy:
     name: 'Terraform Destroy'
     runs-on: ubuntu-latest
-    needs: plan
+    needs: manual_approval
+    if: ${{ github.event.inputs.action == 'Terraform_destroy' }}
 
     steps:
-      # Step 1: Destroy Terraform Resources
       - name: Terraform Destroy
-        if: ${{ github.event.inputs.action == 'Terraform_destroy' }}
         run: terraform destroy -input=false -auto-approve
 
-      # Step 2: Notify Success for Destroy
-      - name: Notify Success
-        if: ${{ success() && github.event.inputs.action == 'Terraform_destroy' }}
+  notify_success:
+    name: 'Notify Success'
+    runs-on: ubuntu-latest
+    needs: apply
+    if: success()
+
+    steps:
+      - name: Notify Success via SNS
         run: |
           aws sns publish --topic-arn ${{ secrets.SNS_TOPIC_ARN }} \
-            --message "Terraform Destroy succeeded for ${{ github.event.inputs.environment }} environment!" \
-            --subject "Terraform Destroy Success"
+            --message "Terraform Apply succeeded for ${{ github.event.inputs.environment }} environment!" \
+            --subject "Terraform Apply Success"
+            
