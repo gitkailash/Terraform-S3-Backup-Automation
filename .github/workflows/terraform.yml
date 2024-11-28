@@ -29,6 +29,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: List Repository Contents
+        run: ls -alh
+
   init:
     name: 'Terraform Initialization'
     runs-on: ubuntu-latest
