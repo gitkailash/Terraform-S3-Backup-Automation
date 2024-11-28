@@ -53,6 +53,9 @@ jobs:
     needs: validate
 
     steps:
+      - name: Debug Repository Contents
+        run: ls -alh
+
       - name: Terraform Plan
         run: terraform plan -out=plan-${{ github.event.inputs.environment }}.tfplan
 
