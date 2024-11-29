@@ -245,6 +245,24 @@ module.backup.aws_backup_selection.backup_selection: Creation complete after 4s 
 🔥 *Pro Tip*: Save yourself the trouble—follow the steps under [**Trigger the Workflow**](#trigger-the-workflow) in the **How to Run the Project** section to trigger the `Terraform_destroy` workflow. Your wallet will thank you later!  
 
 ---
+
+## Screeshots of Execution  
+
+Below are the screenshots showcasing the successful execution of this project, from applying the infrastructure to completing the backup process and finally destroying the resources.  
+
+### 1. Terraform Apply Success  
+![Terraform Apply Success](assets/apply-success.PNG)  
+
+### 2. Backup Process Completed  
+![Backup Completed](assets/backup-completed.PNG)  
+
+### 3. Terraform Destroy Success  
+![Terraform Destroy Success](assets/destroy-success.PNG)  
+
+These images are a testament to the seamless implementation and teardown of this backup solution. 🎉  
+
+---
+
 ## License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
