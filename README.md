@@ -142,14 +142,17 @@ module.backup.aws_backup_selection.backup_selection: Creation complete after 4s 
 
 Below are the screenshots showcasing the successful execution of this project, from applying the infrastructure to completing the backup process and finally destroying the resources.  
 
-### 1. Terraform Apply Success  
+### 1. CI/CD Pipeline  
+![CI/CD Pipeline](assets/github-action-pipeline.PNG) 
+
+### 2. Terraform Apply Success  
 ![Terraform Apply Success](assets/apply-success.PNG)  
 
-### 2. Backup Process Completed  
+### 3. Backup Process Completed  
 ![Backup Completed](assets/backup-completed.PNG)  
 
-### 3. Terraform Destroy Success  
-![Terraform Destroy Success](assets/destroy-success.PNG)  
+### 4. Terraform Destroy Success  
+![Terraform Destroy Success](assets/destroy-success.PNG) 
 
 These images are a testament to the seamless implementation and teardown of this backup solution. 🎉  
 
