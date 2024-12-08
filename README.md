@@ -118,14 +118,14 @@ module.backup.aws_backup_plan.backup_plan: Creating...
 module.eventbridge.aws_cloudwatch_event_rule.backup_event_rule: Creation complete after 1s [id=backup-completion-event]
 module.backup.aws_iam_role.backup_role: Creation complete after 1s [id=backup-service-role]
 module.backup.aws_iam_role_policy_attachment.backup_policy_attachment: Creating...
-module.backup.aws_backup_plan.backup_plan: Creation complete after 1s [id=47411bf8-725e-4e6f-b6cc-bc096b934f3e]
+module.backup.aws_backup_plan.backup_plan: Creation complete after 1s [id=12345abc-de67-890f-gh12-ijk345lmno67]
 module.backup.aws_backup_selection.backup_selection: Creating...
-module.sns.aws_sns_topic.sns_topic: Creation complete after 2s [id=arn:aws:sns:***:239273560241:s3-backup-notifications]
+module.sns.aws_sns_topic.sns_topic: Creation complete after 2s [id=arn:aws:sns:***:987654321098:s3-backup-notifications]
 module.sns.aws_sns_topic_subscription.sns_email_subscription: Creating...
 module.eventbridge.aws_cloudwatch_event_target.backup_event_target: Creating...
-module.eventbridge.aws_cloudwatch_event_target.backup_event_target: Creation complete after 1s [id=backup-completion-event-terraform-20241129063557250600000002]
-module.sns.aws_sns_topic_subscription.sns_email_subscription: Creation complete after 1s [id=arn:aws:sns:***:239273560241:s3-backup-notifications:e3754d64-75d8-4e4a-b54a-5cc1ad4c1b94]
-module.backup.aws_backup_selection.backup_selection: Creation complete after 4s [id=41e9b935-0bd9-4f9a-9e10-572dce7ff4a1]
+module.eventbridge.aws_cloudwatch_event_target.backup_event_target: Creation complete after 1s [id=backup-completion-event-terraform-20241208063557250600000001]
+module.sns.aws_sns_topic_subscription.sns_email_subscription: Creation complete after 1s [id=arn:aws:sns:***:987654321098:s3-backup-notifications:a1b2c3d4-e5f6-7890-gh12-ijkl345mnop6]
+module.backup.aws_backup_selection.backup_selection: Creation complete after 4s [id=a1b2c3d4-0bd9-4f9a-9e10-1234dce7ff4a]
 ```
 ---
 
